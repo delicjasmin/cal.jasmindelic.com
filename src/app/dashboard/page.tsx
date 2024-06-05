@@ -2,12 +2,11 @@
 
 import { getServerUser } from "@/lib/auth";
 import { redirect } from "next/navigation";
-import Home from "./page-client-component";
+import Dashboard from "./page-client-component";
 
-export default async function HomePage() {
+export default async function DashboardPage() {
   const user = await getServerUser();
-
   if (!user) redirect("/login");
 
-  return <Home />;
+  return <Dashboard />;
 }
