@@ -140,7 +140,7 @@ export default function ConfirmPasswordReset({ email }: { email: string }) {
                 <FormDescription>
                   {confirmReset.isError ? (
                     <p className="font-medium text-red-500">
-                      The code you've entered is not valid.
+                      The code you&apos;ve entered is not valid.
                     </p>
                   ) : (
                     "Enter the code from the email we sent you"
@@ -195,7 +195,7 @@ export default function ConfirmPasswordReset({ email }: { email: string }) {
         </form>
       </Form>
       <div className="flex flex-col gap-3 border-t-2 pt-7 text-sm text-muted-foreground">
-        <p>Didn't receive your code?</p>
+        <p>Didn&apos;t receive your code?</p>
         <Button
           className="w-full"
           disabled={resendConfirmationCode.isSuccess}

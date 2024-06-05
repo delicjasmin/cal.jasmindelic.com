@@ -99,9 +99,9 @@ export default function Login() {
                 ></PasswordInput>
               </FormControl>
               <FormDescription>
-                <a href="/reset-password">Can't remember you password?</a>
+                <a href="/reset-password">Can&apos;t remember you password?</a>
                 <br />
-                <a href="/signup">Don't have an account?</a>
+                <a href="/signup">Don&apos;t have an account?</a>
               </FormDescription>
               <FormMessage />
             </FormItem>
