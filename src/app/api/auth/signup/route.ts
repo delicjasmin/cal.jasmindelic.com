@@ -36,6 +36,18 @@ export async function POST(req: Request) {
         });
       });
 
+      try {
+        await sendEmail(email, name, code, "signup");
+        new Response(JSON.stringify({ message: "Email sent successfully" }), {
+          status: 200,
+        });
+      } catch (error) {
+        console.error(error);
+        new Response(JSON.stringify({ message: "Internal Server Error" }), {
+          status: 500,
+        });
+      }
+
       return NextResponse.json(
         { message: "Signup successful" },
         { status: 201 },
