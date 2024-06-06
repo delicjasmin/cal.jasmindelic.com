@@ -72,6 +72,7 @@ export async function POST(req: Request) {
 
     return NextResponse.json({ message: "Signup successful" }, { status: 201 });
   } catch (error) {
+    console.error(error);
     return NextResponse.json(
       { error: { message: "Signup failed" } },
       { status: 500 },
