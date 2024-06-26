@@ -1,5 +1,11 @@
 import { relations } from "drizzle-orm";
-import { mysqlTable, text, timestamp, varchar } from "drizzle-orm/mysql-core";
+import {
+  boolean,
+  mysqlTable,
+  text,
+  timestamp,
+  varchar,
+} from "drizzle-orm/mysql-core";
 
 export const users = mysqlTable("users", {
   id: varchar("id", { length: 256 }).primaryKey(),
@@ -79,3 +85,13 @@ export const participantsRelations = relations(participants, ({ one }) => ({
     references: [appointments.id],
   }),
 }));
+
+export const events = mysqlTable("events", {
+  id: varchar("id", { length: 256 }).primaryKey(),
+  userId: varchar("user_id", { length: 256 }),
+  title: varchar("title", { length: 256 }),
+  duration: varchar("duration", { length: 256 }),
+  location: text("location"),
+  link: varchar("link", { length: 256 }),
+  enabled: boolean("enabled"),
+});

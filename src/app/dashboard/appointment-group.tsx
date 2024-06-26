@@ -30,7 +30,7 @@ export default function AppointmentGroup({
       }}
     >
       {result.map((appointment, i) => (
-        <>
+        <div key={i}>
           <div
             key={appointment.parent.id}
             className="absolute rounded-sm border border-slate-700 bg-amber-400"
@@ -78,7 +78,7 @@ export default function AppointmentGroup({
               width={width - 5 - (i * width) / result.length}
             ></AppointmentGroup>
           ))}
-        </>
+        </div>
       ))}
     </div>
   );

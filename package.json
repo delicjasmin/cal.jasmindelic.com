@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "generate": "drizzle-kit generate:mysql",
+    "generate": "drizzle-kit generate",
     "migrate": "tsx ./src/db/migrate.ts",
     "dev": "next dev",
     "build": "next build",
@@ -19,6 +19,8 @@
     "@radix-ui/react-popover": "^1.0.7",
     "@radix-ui/react-select": "^2.0.0",
     "@radix-ui/react-slot": "^1.0.2",
+    "@radix-ui/react-switch": "^1.0.3",
+    "@radix-ui/react-tabs": "^1.0.4",
     "@sendgrid/mail": "^8.1.0",
     "@tanstack/react-query": "^5.17.19",
     "bcrypt": "^5.1.1",

@@ -12,8 +12,13 @@ import {
 import { format } from "date-fns";
 import dayjs from "dayjs";
 import { capitalize, times } from "lodash";
-import { ChevronDown, ChevronLeft, ChevronRight } from "lucide-react";
-import { useSearchParams } from "next/navigation";
+import {
+  CalendarPlus2,
+  ChevronDown,
+  ChevronLeft,
+  ChevronRight,
+} from "lucide-react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import Day from "./day";
 import NewAppointment from "./new-appointment";
@@ -61,7 +66,7 @@ export default function Dashboard() {
   const [{ mode, date }, setDateState] = useDateState();
   const [open, setOpen] = useState(false);
   const [time, setTime] = useState("12:00 AM");
-
+  const router = useRouter();
   const formatStr =
     mode === "day"
       ? format(date, "eee, d LLL")
@@ -183,6 +188,15 @@ export default function Dashboard() {
         setOpen={setOpen}
         time={time}
       ></NewAppointment>
+
+      <Button
+        className="fixed bottom-10 right-10 size-fit rounded-full p-3.5"
+        onClick={() => {
+          router.push("/events");
+        }}
+      >
+        <CalendarPlus2 />
+      </Button>
     </>
   );
 }
