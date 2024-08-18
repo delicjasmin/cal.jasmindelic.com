@@ -28,7 +28,14 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { format } from "date-fns";
 import dayjs from "dayjs";
 import { ClockIcon, MapPinIcon, TextIcon, UsersIcon } from "lucide-react";
-import { Dispatch, SetStateAction, use, useContext, useEffect } from "react";
+import {
+  Dispatch,
+  SetStateAction,
+  use,
+  useContext,
+  useEffect,
+  useMemo,
+} from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { z } from "zod";
 import { Appointment } from "./all-appointments";
@@ -118,8 +125,9 @@ function EditAppointmentDialog({
   const { contacts } = useContext(ContactsContext)!;
   const { participants, title, id, description, startsAt, endsAt, location } =
     appointment;
-  const participantsArray = participants.map((p) =>
-    p.email ? p.email : undefined,
+  const participantsArray = useMemo(
+    () => participants.map((p) => (p.email ? p.email : undefined)),
+    [participants],
   );
 
   const form = useForm<ValidationSchema>({
@@ -141,13 +149,13 @@ function EditAppointmentDialog({
       title: title ? title : "",
       startDate: startsAt ? dayjs(startsAt).startOf("d").toDate() : new Date(),
       endDate: endsAt ? dayjs(endsAt).startOf("d").toDate() : new Date(),
-      startTime: dayjs(appointment.startsAt).format("hh:mm A"),
-      endTime: dayjs(appointment.endsAt).format("hh:mm A"),
+      startTime: dayjs(startsAt).format("hh:mm A"),
+      endTime: dayjs(endsAt).format("hh:mm A"),
       location: location ? location : "",
       participantsArray: participantsArray ? participantsArray : [],
       description: description ? description : "",
     });
-  }, [form.reset, appointment]);
+  }, [description, endsAt, form, location, participantsArray, startsAt, title]);
   const currentStartTime = form.watch("startTime");
   const startTimeIndex = timeIndex(currentStartTime, times);
   const extendedTimes = extendTimes(timeIndex(currentStartTime, times));
@@ -169,7 +177,7 @@ function EditAppointmentDialog({
     if (!nextDay) form.setValue("endDate", currentStartDate);
     else
       form.setValue("endDate", dayjs(currentStartDate).add(1, "day").toDate());
-  }, [currentStartDate, nextDay]);
+  }, [currentStartDate, form, nextDay]);
 
   const editAppointment = useMutation({
     mutationFn: editAppointmentRequest,

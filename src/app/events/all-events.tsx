@@ -30,7 +30,7 @@ export default function AllEvents() {
     queryFn: getEventsRequest,
   });
 
-  if (!query.data) return null;
+  if (!query.data || !query.data.result) return null;
 
   return (
     <div className="flex flex-wrap gap-4">

@@ -5,22 +5,8 @@
     {
       "idx": 0,
       "version": "5",
-      "when": 1706884835754,
-      "tag": "0000_broad_joshua_kane",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "5",
-      "when": 1711278521563,
-      "tag": "0001_plain_jack_flag",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "5",
-      "when": 1718707193098,
-      "tag": "0002_volatile_strong_guy",
+      "when": 1724017545977,
+      "tag": "0000_ambitious_toxin",
       "breakpoints": true
     }
   ]

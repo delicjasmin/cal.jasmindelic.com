@@ -90,7 +90,7 @@ export default function Dashboard() {
     setDateState(mode, date);
   };
 
-  useEffect(() => setDateState(mode, date), [mode, date]);
+  useEffect(() => setDateState(mode, date), [mode, date, setDateState]);
 
   return (
     <>

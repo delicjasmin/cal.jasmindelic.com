@@ -12,6 +12,13 @@ export async function POST(req: Request) {
   try {
     const [user] = await db.select().from(users).where(eq(users.email, email));
 
+    if (!user) {
+      return NextResponse.json(
+        { error: { message: "Email not in registered" } },
+        { status: 401 },
+      );
+    }
+
     const passwordMatches = await bcrypt.compare(password, user.password);
 
     if (passwordMatches) {

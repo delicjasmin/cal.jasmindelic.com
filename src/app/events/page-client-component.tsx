@@ -15,14 +15,14 @@ export default function Events() {
       <header className="sticky top-0 z-50 flex w-full items-center bg-white shadow-md">
         <nav className="max-w-8xl mx-auto flex h-16 w-full items-center justify-between border-b-2 p-2 px-20">
           <MoveLeft
-            onClick={() => router.back()}
+            onClick={() => router.push("/dashboard")}
             className="h-6 w-8 hover:cursor-pointer"
           />
         </nav>
       </header>
 
       <Tabs defaultValue="events" className="m-14 mx-auto w-full px-20">
-        <TabsList className="flex justify-between rounded-none border-b-2 bg-white p-6">
+        <TabsList className="flex justify-between rounded-none border-b-2 p-6">
           <div>
             <TabsTrigger value="events">Events</TabsTrigger>
             <TabsTrigger value="scheduled">Scheduled</TabsTrigger>

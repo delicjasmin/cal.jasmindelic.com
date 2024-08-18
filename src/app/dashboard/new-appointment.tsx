@@ -28,7 +28,13 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { format } from "date-fns";
 import dayjs from "dayjs";
 import { ClockIcon, MapPinIcon, TextIcon, UsersIcon } from "lucide-react";
-import { Dispatch, SetStateAction, useContext, useEffect } from "react";
+import {
+  Dispatch,
+  SetStateAction,
+  useContext,
+  useEffect,
+  useMemo,
+} from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { z } from "zod";
 
@@ -45,15 +51,8 @@ const validationSchema = z.object({
 
 type ValidationSchema = z.infer<typeof validationSchema>;
 
-type TimeArray = {
-  time: string;
-  hours: number;
-  minutes: number;
-  period: string;
-}[];
-
 const listTimes = (hour: number = 0, minute: number = 0) => {
-  const timeArray: TimeArray = [];
+  const timeArray = [];
 
   for (let h = hour; h < 24; h++) {
     for (let m = minute; m < 60; m += 15) {
@@ -63,15 +62,14 @@ const listTimes = (hour: number = 0, minute: number = 0) => {
         time,
         hours: h,
         minutes: m,
-        period,
       });
     }
   }
   return timeArray;
 };
 const times = listTimes();
-const timeIndex = (time: string, times: TimeArray) =>
-  times.findIndex((i) => i.time === time);
+const timeIndex = (time: string, timesArray: typeof times) =>
+  timesArray.findIndex((i) => i.time === time);
 const extendTimes = (index: number) =>
   times.slice(index).concat(times.slice(0, index));
 
@@ -134,7 +132,10 @@ function AppointmentDialog({
 
   const currentStartTime = form.watch("startTime");
   const startTimeIndex = timeIndex(currentStartTime, times);
-  const extendedTimes = extendTimes(timeIndex(currentStartTime, times));
+  const extendedTimes = useMemo(
+    () => extendTimes(timeIndex(currentStartTime, times)),
+    [currentStartTime],
+  );
 
   const currentEndTime = form.watch("endTime");
   const endTimeIndex = timeIndex(currentEndTime, extendedTimes);
@@ -153,22 +154,22 @@ function AppointmentDialog({
     if (!nextDay) form.setValue("endDate", currentStartDate);
     else
       form.setValue("endDate", dayjs(currentStartDate).add(1, "day").toDate());
-  }, [currentStartDate, nextDay]);
+  }, [currentStartDate, form, nextDay]);
 
   useEffect(() => {
     form.setValue("startTime", defaultTime);
     const extendedTimesDefault = extendTimes(timeIndex(defaultTime, times));
     form.setValue("endTime", extendedTimesDefault[4].time);
-  }, [defaultTime, open]);
+  }, [defaultTime, form, open]);
 
   useEffect(() => {
     form.setValue("startDate", date);
     form.setValue("endDate", date);
-  }, [date, open]);
+  }, [date, form, open]);
 
   useEffect(() => {
     form.setValue("endTime", extendedTimes[4].time);
-  }, [currentStartTime]);
+  }, [currentStartTime, extendedTimes, form]);
 
   const createAppointment = useMutation({
     mutationFn: newAppointmentRequest,

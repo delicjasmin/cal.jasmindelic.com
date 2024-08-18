@@ -17,6 +17,7 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { z } from "zod";
 
@@ -66,6 +67,7 @@ const resendRequest = async (email: string) => {
 };
 
 export default function ConfirmEmail({ email }: { email: string }) {
+  const [isResendHidden, setIsResendHidden] = useState(true);
   const router = useRouter();
 
   const form = useForm<ValidationSchema>({
@@ -145,9 +147,11 @@ export default function ConfirmEmail({ email }: { email: string }) {
         </form>
       </Form>
       <div className="flex flex-col gap-3 border-t-2 pt-7 text-sm text-muted-foreground">
-        <p>Didn&apos;t receive your code?</p>
+        <p className="cursor-pointer" onClick={() => setIsResendHidden(false)}>
+          Didn&apos;t receive your code?
+        </p>
         <Button
-          className="w-full"
+          className={`w-full ${isResendHidden ? "hidden" : ""}`}
           disabled={resendConfirmationCode.isSuccess}
           onClick={() => onResend(email)}
         >

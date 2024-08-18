@@ -21,7 +21,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { ChevronDown, MoveLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { SubmitHandler, useForm } from "react-hook-form";
@@ -189,7 +189,7 @@ export default function EditEvent({
           </form>
         </Form>
       </div>
-      <div className="mx-auto flex h-fit flex-col items-center justify-center overflow-hidden rounded-sm border border-black">
+      <div className="mx-auto flex h-fit flex-col items-center justify-center overflow-hidden rounded-lg border border-black">
         <div className="w-full border-b border-black">
           <p className="p-2 text-sm">This is your event preview</p>
         </div>
