@@ -21,13 +21,15 @@ export default function Events() {
         </nav>
       </header>
 
-      <Tabs defaultValue="events" className="m-14 mx-auto w-full px-20">
-        <TabsList className="flex justify-between rounded-none border-b-2 p-6">
+      <Tabs defaultValue="events" className="m-14 mx-auto w-full px-32">
+        <TabsList className="flex justify-between  bg-white">
           <div>
             <TabsTrigger value="events">Events</TabsTrigger>
             <TabsTrigger value="scheduled">Scheduled</TabsTrigger>
           </div>
-          <Button onClick={() => router.push("/events/new")}>New Event</Button>
+          <Button onClick={() => router.push("/events/new")} className="mb-4">
+            New Event
+          </Button>
         </TabsList>
         <TabsContent value="events">
           <AllEvents></AllEvents>

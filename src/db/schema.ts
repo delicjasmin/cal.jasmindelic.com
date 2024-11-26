@@ -7,6 +7,7 @@ import {
   mysqlTable,
   text,
   timestamp,
+  unique,
   varchar,
 } from "drizzle-orm/mysql-core";
 
@@ -89,18 +90,22 @@ export const participantsRelations = relations(participants, ({ one }) => ({
   }),
 }));
 
-export const events = mysqlTable("events", {
-  id: varchar("id", { length: 256 }).primaryKey(),
-  userId: varchar("user_id", { length: 256 }).notNull(),
-  title: varchar("title", { length: 256 }).notNull().default("Untitled"),
-  duration: varchar("duration", { length: 256 }).notNull().default("60"),
-  location: text("location").notNull().default("No location given"),
-  link: varchar("link", { length: 256 })
-    .notNull()
-    .default(cryptoRandomString({ length: 10, type: "url-safe" })),
-  enabled: boolean("enabled").notNull().default(true),
-  timezone: varchar("timezone", { length: 256 }).notNull().default("cst"),
-});
+export const events = mysqlTable(
+  "events",
+  {
+    id: varchar("id", { length: 256 }).primaryKey(),
+    userId: varchar("user_id", { length: 256 }).notNull(),
+    title: varchar("title", { length: 256 }).notNull(),
+    duration: varchar("duration", { length: 256 }).notNull(),
+    location: text("location").notNull(),
+    link: varchar("link", { length: 256 }).notNull(),
+    enabled: boolean("enabled").notNull(),
+    timezone: varchar("timezone", { length: 256 }).notNull(),
+  },
+  (t) => ({
+    unq: unique().on(t.userId, t.link),
+  }),
+);
 
 export const eventsRelations = relations(events, ({ many, one }) => ({
   eventAvailability: many(eventAvailability),
@@ -112,10 +117,10 @@ export const eventsRelations = relations(events, ({ many, one }) => ({
 
 export const eventAvailability = mysqlTable("event_availability", {
   id: varchar("id", { length: 256 }).primaryKey(),
-  eventId: varchar("user_id", { length: 256 }),
-  enabled: boolean("enabled"),
-  startTimeMinuteOffset: int("start_time_minute_offset"),
-  endTimeMinuteOffset: int("end_time_minute_offset"),
+  eventId: varchar("event_id", { length: 256 }).notNull(),
+  enabled: boolean("enabled").notNull(),
+  startTimeMinuteOffset: int("start_time_minute_offset").notNull(),
+  endTimeMinuteOffset: int("end_time_minute_offset").notNull(),
   day: mysqlEnum("day", [
     "monday",
     "tuesday",
@@ -124,13 +129,12 @@ export const eventAvailability = mysqlTable("event_availability", {
     "friday",
     "saturday",
     "sunday",
-  ]),
+  ]).notNull(),
 });
 
 export const eventAvailabilityRelations = relations(
   eventAvailability,
-  ({ many, one }) => ({
-    eventAvailability: many(eventAvailability),
+  ({ one }) => ({
     event: one(events, {
       fields: [eventAvailability.eventId],
       references: [events.id],

@@ -14,28 +14,45 @@ import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
-  SelectGroup,
   SelectItem,
-  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import TimeSelect from "@/components/ui/time-select";
+import { TimezoneSelect } from "@/components/ui/timezone-select";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { ChevronDown, MoveLeft } from "lucide-react";
+import {
+  CalendarPlus,
+  ChevronDown,
+  ChevronLeft,
+  ChevronRight,
+  ListCollapse,
+  MoveLeft,
+} from "lucide-react";
 import { useRouter } from "next/navigation";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { z } from "zod";
 import { EventType } from "../../all-events";
+import {
+  daysOfWeek,
+  formSchema,
+  FormSchema,
+} from "../../new/page-client-component";
 
-const formSchema = z.object({
-  title: z.string(),
-  duration: z.string(),
-  location: z.string(),
-  link: z.string(),
-});
-
-type FormSchema = z.infer<typeof formSchema>;
+type EventAvailabilityType = {
+  enabled: boolean;
+  startTime: number;
+  endTime: number;
+  day:
+    | "monday"
+    | "tuesday"
+    | "wednesday"
+    | "thursday"
+    | "friday"
+    | "saturday"
+    | "sunday";
+}[];
 
 const editEventRequest = async (data: {
   title: string;
@@ -65,12 +82,17 @@ const editEventRequest = async (data: {
 export default function EditEvent({
   email,
   event,
+  eventAvailability,
   id,
 }: {
   email: string | null;
   event: EventType;
+  eventAvailability: EventAvailabilityType;
   id: string;
 }) {
+  const [monday, tuesday, wednesday, thursday, friday, saturday, sunday] =
+    eventAvailability;
+
   const form = useForm<FormSchema>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -78,6 +100,41 @@ export default function EditEvent({
       duration: event.duration,
       location: event.location,
       link: event.link,
+      monday: {
+        ...monday,
+        startTime: monday.startTime.toString(),
+        endTime: monday.endTime.toString(),
+      },
+      tuesday: {
+        ...tuesday,
+        startTime: tuesday.startTime.toString(),
+        endTime: tuesday.endTime.toString(),
+      },
+      wednesday: {
+        ...wednesday,
+        startTime: wednesday.startTime.toString(),
+        endTime: wednesday.endTime.toString(),
+      },
+      thursday: {
+        ...thursday,
+        startTime: thursday.startTime.toString(),
+        endTime: thursday.endTime.toString(),
+      },
+      friday: {
+        ...friday,
+        startTime: friday.startTime.toString(),
+        endTime: friday.endTime.toString(),
+      },
+      saturday: {
+        ...saturday,
+        startTime: saturday.startTime.toString(),
+        endTime: saturday.endTime.toString(),
+      },
+      sunday: {
+        ...sunday,
+        startTime: sunday.startTime.toString(),
+        endTime: sunday.endTime.toString(),
+      },
     },
   });
 
@@ -100,7 +157,7 @@ export default function EditEvent({
   };
 
   return (
-    <div className="m-auto flex max-w-[1366px] items-center">
+    <div className="m-auto flex max-w-[1920px] items-center">
       <div className="flex w-2/5 flex-col border-r border-black">
         <div className="flex flex-col gap-2 border-b border-black p-6">
           <MoveLeft
@@ -114,78 +171,136 @@ export default function EditEvent({
             onSubmit={form.handleSubmit(onEditEvent)}
             className="mx-12 my-8 flex grow flex-col gap-2"
           >
-            <FormField
-              control={form.control}
-              name="title"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Event Title</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Title" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            <Tabs defaultValue="details">
+              <TabsList>
+                <TabsTrigger value="details" className="gap-2">
+                  <ListCollapse className="size-5" /> Details
+                </TabsTrigger>
+                <TabsTrigger value="availability" className="gap-2">
+                  <CalendarPlus className="size-5" /> Availability
+                </TabsTrigger>
+              </TabsList>
 
-            <FormField
-              control={form.control}
-              name="duration"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Duration</FormLabel>
-                  <Select onValueChange={field.onChange} value={field.value}>
-                    <FormControl>
-                      <SelectTrigger className="pl-5 data-[placeholder]:text-muted-foreground">
-                        <SelectValue placeholder="Choose event duration" />
-                        <ChevronDown className="w-5" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent onCloseAutoFocus={(e) => e.preventDefault()}>
-                      <SelectItem value="15">15 minutes</SelectItem>
-                      <SelectItem value="30">30 minutes</SelectItem>
-                      <SelectItem value="45">45 minutes</SelectItem>
-                      <SelectItem value="60">1 hour</SelectItem>
-                      <SelectItem value="90">1.5 hours</SelectItem>
-                      <SelectItem value="120">2 hours</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+              <TabsContent value="details" className="w-full py-6">
+                <FormField
+                  control={form.control}
+                  name="title"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Event Title</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Title" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-            <FormField
-              control={form.control}
-              name="location"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Location</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Location" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+                <FormField
+                  control={form.control}
+                  name="duration"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Duration</FormLabel>
+                      <Select
+                        onValueChange={field.onChange}
+                        value={field.value}
+                      >
+                        <FormControl>
+                          <SelectTrigger className="pl-5 data-[placeholder]:text-muted-foreground">
+                            <SelectValue placeholder="Choose event duration" />
+                            <ChevronDown className="w-5" />
+                          </SelectTrigger>
+                        </FormControl>
 
-            <FormField
-              control={form.control}
-              name="link"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Link (optional)</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Link" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+                        <SelectContent>
+                          <SelectItem value="15">15 minutes</SelectItem>
+                          <SelectItem value="30">30 minutes</SelectItem>
+                          <SelectItem value="45">45 minutes</SelectItem>
+                          <SelectItem value="60">1 hour</SelectItem>
+                          <SelectItem value="90">1.5 hours</SelectItem>
+                          <SelectItem value="120">2 hours</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-            <Button className="mt-5 place-self-end" type="submit">
-              Save Changes
-            </Button>
+                <FormField
+                  control={form.control}
+                  name="location"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Location</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Location" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="link"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Link (optional)</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Link" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <TabsList className="mt-5 w-full items-center justify-end border-b-0">
+                  <TabsTrigger
+                    value="availability"
+                    className="h-9 w-28 border shadow-md"
+                  >
+                    Next
+                    <ChevronRight className="w-5" />
+                  </TabsTrigger>
+                </TabsList>
+              </TabsContent>
+
+              <TabsContent value="availability" className="py-6">
+                <div className="flex flex-col justify-center gap-3">
+                  {daysOfWeek.map((day) => {
+                    return (
+                      <FormField
+                        key={day}
+                        control={form.control}
+                        name={day}
+                        render={() => (
+                          <FormItem>
+                            <FormControl>
+                              <TimeSelect day={day} form={form}></TimeSelect>
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    );
+                  })}
+                </div>
+
+                <TabsList className="mt-5 flex items-center justify-between border-b-0">
+                  <TabsTrigger
+                    value="details"
+                    className="h-9 w-28 border shadow-md"
+                  >
+                    <ChevronLeft className="w-5" />
+                    Previous
+                  </TabsTrigger>
+                  <Button className="h-9 w-28" type="submit">
+                    Submit
+                  </Button>
+                </TabsList>
+              </TabsContent>
+            </Tabs>
           </form>
         </Form>
       </div>
@@ -214,86 +329,7 @@ export default function EditEvent({
               className="self-center"
               classNames={{ row: "flex " }}
             ></Calendar>
-            <Select>
-              <SelectTrigger className="">
-                <SelectValue placeholder="Select a timezone" />
-                <ChevronDown className="w-5" />
-              </SelectTrigger>
-              <SelectContent onCloseAutoFocus={(e) => e.preventDefault()}>
-                <SelectGroup>
-                  <SelectLabel>North America</SelectLabel>
-                  <SelectItem value="est">
-                    Eastern Standard Time (EST)
-                  </SelectItem>
-                  <SelectItem value="cst">
-                    Central Standard Time (CST)
-                  </SelectItem>
-                  <SelectItem value="mst">
-                    Mountain Standard Time (MST)
-                  </SelectItem>
-                  <SelectItem value="pst">
-                    Pacific Standard Time (PST)
-                  </SelectItem>
-                  <SelectItem value="akst">
-                    Alaska Standard Time (AKST)
-                  </SelectItem>
-                  <SelectItem value="hst">
-                    Hawaii Standard Time (HST)
-                  </SelectItem>
-                </SelectGroup>
-                <SelectGroup>
-                  <SelectLabel>Europe & Africa</SelectLabel>
-                  <SelectItem value="gmt">Greenwich Mean Time (GMT)</SelectItem>
-                  <SelectItem value="cet">
-                    Central European Time (CET)
-                  </SelectItem>
-                  <SelectItem value="eet">
-                    Eastern European Time (EET)
-                  </SelectItem>
-                  <SelectItem value="west">
-                    Western European Summer Time (WEST)
-                  </SelectItem>
-                  <SelectItem value="cat">Central Africa Time (CAT)</SelectItem>
-                  <SelectItem value="eat">East Africa Time (EAT)</SelectItem>
-                </SelectGroup>
-                <SelectGroup>
-                  <SelectLabel>Asia</SelectLabel>
-                  <SelectItem value="msk">Moscow Time (MSK)</SelectItem>
-                  <SelectItem value="ist">India Standard Time (IST)</SelectItem>
-                  <SelectItem value="cst_china">
-                    China Standard Time (CST)
-                  </SelectItem>
-                  <SelectItem value="jst">Japan Standard Time (JST)</SelectItem>
-                  <SelectItem value="kst">Korea Standard Time (KST)</SelectItem>
-                  <SelectItem value="ist_indonesia">
-                    Indonesia Central Standard Time (WITA)
-                  </SelectItem>
-                </SelectGroup>
-                <SelectGroup>
-                  <SelectLabel>Australia & Pacific</SelectLabel>
-                  <SelectItem value="awst">
-                    Australian Western Standard Time (AWST)
-                  </SelectItem>
-                  <SelectItem value="acst">
-                    Australian Central Standard Time (ACST)
-                  </SelectItem>
-                  <SelectItem value="aest">
-                    Australian Eastern Standard Time (AEST)
-                  </SelectItem>
-                  <SelectItem value="nzst">
-                    New Zealand Standard Time (NZST)
-                  </SelectItem>
-                  <SelectItem value="fjt">Fiji Time (FJT)</SelectItem>
-                </SelectGroup>
-                <SelectGroup>
-                  <SelectLabel>South America</SelectLabel>
-                  <SelectItem value="art">Argentina Time (ART)</SelectItem>
-                  <SelectItem value="bot">Bolivia Time (BOT)</SelectItem>
-                  <SelectItem value="brt">Brasilia Time (BRT)</SelectItem>
-                  <SelectItem value="clt">Chile Standard Time (CLT)</SelectItem>
-                </SelectGroup>
-              </SelectContent>
-            </Select>
+            <TimezoneSelect />
           </div>
         </div>
       </div>

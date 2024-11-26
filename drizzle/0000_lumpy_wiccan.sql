@@ -27,23 +27,23 @@ CREATE TABLE `contacts` (
 --> statement-breakpoint
 CREATE TABLE `event_availability` (
 	`id` varchar(256) NOT NULL,
-	`user_id` varchar(256),
-	`enabled` boolean,
-	`start_time_minute_offset` int,
-	`end_time_minute_offset` int,
-	`day` enum('monday','tuesday','wednesday','thursday','friday','saturday','sunday'),
+	`event_id` varchar(256) NOT NULL,
+	`enabled` boolean NOT NULL,
+	`start_time_minute_offset` int NOT NULL,
+	`end_time_minute_offset` int NOT NULL,
+	`day` enum('monday','tuesday','wednesday','thursday','friday','saturday','sunday') NOT NULL,
 	CONSTRAINT `event_availability_id` PRIMARY KEY(`id`)
 );
 --> statement-breakpoint
 CREATE TABLE `events` (
 	`id` varchar(256) NOT NULL,
 	`user_id` varchar(256) NOT NULL,
-	`title` varchar(256) NOT NULL DEFAULT 'Untitled',
-	`duration` varchar(256) NOT NULL DEFAULT '60',
-	`location` text NOT NULL DEFAULT ('No location given'),
-	`link` varchar(256) NOT NULL DEFAULT 'ILiN7ESf3y',
-	`enabled` boolean NOT NULL DEFAULT true,
-	`timezone` varchar(256) NOT NULL DEFAULT 'cst',
+	`title` varchar(256) NOT NULL,
+	`duration` varchar(256) NOT NULL,
+	`location` text NOT NULL,
+	`link` varchar(256) NOT NULL,
+	`enabled` boolean NOT NULL,
+	`timezone` varchar(256) NOT NULL,
 	CONSTRAINT `events_id` PRIMARY KEY(`id`)
 );
 --> statement-breakpoint

@@ -1,0 +1,1 @@
+ALTER TABLE `events` ADD CONSTRAINT `events_user_id_link_unique` UNIQUE(`user_id`,`link`);

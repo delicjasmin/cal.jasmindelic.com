@@ -1,8 +1,8 @@
 {
   "version": "5",
   "dialect": "mysql",
-  "id": "1d389ecf-562d-4058-9720-700b271dc85c",
-  "prevId": "00000000-0000-0000-0000-000000000000",
+  "id": "1e0e03e0-03b9-4c98-b1b8-821e96fe9027",
+  "prevId": "1d389ecf-562d-4058-9720-700b271dc85c",
   "tables": {
     "appointments": {
       "name": "appointments",
@@ -285,7 +285,15 @@
           ]
         }
       },
-      "uniqueConstraints": {}
+      "uniqueConstraints": {
+        "events_user_id_link_unique": {
+          "name": "events_user_id_link_unique",
+          "columns": [
+            "user_id",
+            "link"
+          ]
+        }
+      }
     },
     "participants": {
       "name": "participants",
