@@ -40,7 +40,7 @@ import {
   FormSchema,
 } from "../../new/page-client-component";
 
-type EventAvailabilityType = {
+export type EventAvailabilityType = {
   enabled: boolean;
   startTime: number;
   endTime: number;
@@ -54,13 +54,11 @@ type EventAvailabilityType = {
     | "sunday";
 }[];
 
-const editEventRequest = async (data: {
-  title: string;
-  duration: string;
-  location: string;
-  link: string;
-  id: string;
-}) => {
+const editEventRequest = async (
+  data: FormSchema & {
+    id: string;
+  },
+) => {
   const reqParams = {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
@@ -146,8 +144,7 @@ export default function EditEvent({
   });
 
   const onEditEvent: SubmitHandler<FormSchema> = (data) => {
-    const { title, location, duration, link } = data;
-    const requestData = { title, location, duration, link, id };
+    const requestData = { ...data, id };
 
     editEvent
       .mutateAsync(requestData)

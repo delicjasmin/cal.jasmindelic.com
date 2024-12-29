@@ -139,8 +139,6 @@ export async function POST(req: Request) {
 
     return NextResponse.json({ message: "Event created." }, { status: 201 });
   } catch (error) {
-    console.log(error);
-
     return NextResponse.json(
       { message: "Internal Server Error" },
       { status: 500 },
@@ -154,18 +152,63 @@ export async function PUT(req: Request) {
   if (!user)
     return NextResponse.json({ message: "Forbidden" }, { status: 403 });
 
-  const { id, duration, link, location, title } = await req.json();
+  const {
+    id,
+    duration,
+    link,
+    location,
+    title,
+    monday,
+    tuesday,
+    wednesday,
+    thursday,
+    friday,
+    saturday,
+    sunday,
+    timezone,
+  } = await req.json();
+
+  const availability = [
+    monday,
+    tuesday,
+    wednesday,
+    thursday,
+    friday,
+    saturday,
+    sunday,
+  ];
 
   try {
-    await db
-      .update(events)
-      .set({
-        title,
-        duration,
-        location,
-        link,
-      })
-      .where(and(eq(events.userId, user.id), eq(events.id, id)));
+    await db.transaction(async (tx) => {
+      await tx
+        .update(events)
+        .set({
+          title,
+          duration,
+          location,
+          link,
+        })
+        .where(eq(events.id, id));
+
+      await Promise.all(
+        availability.map((day) =>
+          tx
+            .update(eventAvailability)
+            .set({
+              enabled: day.enabled,
+              startTimeMinuteOffset: day.startTime,
+              endTimeMinuteOffset: day.endTime,
+              day: day.day,
+            })
+            .where(
+              and(
+                eq(eventAvailability.eventId, id),
+                eq(eventAvailability.day, day.day),
+              ),
+            ),
+        ),
+      );
+    });
 
     return NextResponse.json({ message: "Event updated." }, { status: 201 });
   } catch (error) {

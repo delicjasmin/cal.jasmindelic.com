@@ -166,7 +166,6 @@ export default function NewEvent({ email }: { email: string | null }) {
       .then(() => queryClient.invalidateQueries({ queryKey: ["events"] }))
       .then(() => router.push("/events"))
       .catch(console.warn);
-    console.log(data);
   };
 
   return (
