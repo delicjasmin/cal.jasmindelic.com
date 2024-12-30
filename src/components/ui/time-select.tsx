@@ -84,7 +84,7 @@ export default function TimeSelect({
               value={field.value}
             >
               <FormControl>
-                <SelectTrigger className="rounded-md border-gray-600 hover:bg-accent">
+                <SelectTrigger className="flex w-24 justify-center rounded-md border-gray-600 hover:bg-accent">
                   <SelectValue />
                 </SelectTrigger>
               </FormControl>
@@ -112,7 +112,7 @@ export default function TimeSelect({
               value={field.value}
             >
               <FormControl>
-                <SelectTrigger className="rounded-md border-gray-600 hover:bg-accent">
+                <SelectTrigger className="flex w-24 justify-center rounded-md border-gray-600 hover:bg-accent">
                   <SelectValue>
                     {times.find((t) => t.minutes === field.value)?.time}
                   </SelectValue>
