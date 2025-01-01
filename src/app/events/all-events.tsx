@@ -22,6 +22,7 @@ export type EventType = {
   location: string;
   link: string;
   enabled: boolean;
+  timezone: string;
 };
 
 export default function AllEvents() {
