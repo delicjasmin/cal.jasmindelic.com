@@ -11,6 +11,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { ClipboardCopy, Pencil, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { EventType } from "./all-events";
+import { useState } from "react";
 
 const deleteEventRequest = async (data: { id: string }) => {
   const reqParams = {
@@ -53,6 +54,7 @@ const enableEventRequest = async (data: { enabled: boolean; id: string }) => {
 };
 
 export default function Event({ event }: { event: EventType }) {
+  const [copied, setCopied] = useState(false);
   const router = useRouter();
   const queryClient = useQueryClient();
 
@@ -79,14 +81,16 @@ export default function Event({ event }: { event: EventType }) {
   };
 
   return (
-    <Card className="relative min-w-72 max-w-96 basis-1/3">
+    <Card
+      className={`relative min-w-72 max-w-96 basis-1/3 ${!event.enabled ? "opacity-75" : ""}`}
+    >
       <div className="absolute right-3 top-3 flex gap-3">
         <Pencil
-          className="w-4 cursor-pointer"
+          className="w-4 cursor-pointer hover:scale-110 hover:text-blue-500"
           onClick={() => router.push("/events/edit/" + event.id)}
         />
         <Trash2
-          className="w-4 cursor-pointer"
+          className="w-4 cursor-pointer hover:scale-110 hover:text-red-500"
           onClick={() => onEventDelete()}
         />
       </div>
@@ -97,9 +101,28 @@ export default function Event({ event }: { event: EventType }) {
         <p>{event.duration} minutes</p>
       </CardContent>
       <CardFooter className="flex justify-between">
-        <Button onClick={() => navigator.clipboard.writeText(event.link)}>
-          Copy link
-          <ClipboardCopy className="w-5" />
+        <Button
+          className="w-28"
+          disabled={!event.enabled}
+          onClick={() =>
+            navigator.clipboard
+              .writeText(
+                `${window.location.origin}/events/${event.userId}/${event.link}`,
+              )
+              .then(() => {
+                setCopied(true);
+                setTimeout(() => setCopied(false), 3000);
+              })
+          }
+        >
+          {copied ? (
+            "Copied!"
+          ) : (
+            <span className="flex items-center gap-2">
+              Copy link
+              <ClipboardCopy className="w-5" />
+            </span>
+          )}
         </Button>
         <Switch checked={event.enabled} onCheckedChange={onEventSwitch} />
       </CardFooter>
