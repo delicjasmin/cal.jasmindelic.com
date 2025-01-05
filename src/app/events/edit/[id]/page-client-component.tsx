@@ -52,6 +52,7 @@ export type EventAvailabilityType = {
     | "friday"
     | "saturday"
     | "sunday";
+  dayIndex: number;
 }[];
 
 const editEventRequest = async (
@@ -97,6 +98,7 @@ export default function EditEvent({
       title: event.title,
       duration: event.duration,
       location: event.location,
+      timezone: event.timezone,
       link: event.link,
       monday: {
         ...monday,
@@ -240,6 +242,23 @@ export default function EditEvent({
 
                 <FormField
                   control={form.control}
+                  name="timezone"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Timezone</FormLabel>
+                      <FormControl>
+                        <TimezoneSelect
+                          onValueChange={field.onChange}
+                          value={field.value}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
                   name="link"
                   render={({ field }) => (
                     <FormItem>
@@ -326,7 +345,7 @@ export default function EditEvent({
               className="self-center"
               classNames={{ row: "flex " }}
             ></Calendar>
-            <TimezoneSelect />
+            {/* <TimezoneSelect /> */}
           </div>
         </div>
       </div>

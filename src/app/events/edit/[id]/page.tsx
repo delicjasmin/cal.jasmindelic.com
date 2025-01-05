@@ -22,6 +22,7 @@ export default async function EditEventPage({
         startTime: eventAvailability.startTimeMinuteOffset,
         endTime: eventAvailability.endTimeMinuteOffset,
         day: eventAvailability.day,
+        dayIndex: eventAvailability.dayIndex,
       })
       .from(eventAvailability)
       .where(eq(eventAvailability.eventId, id));

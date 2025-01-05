@@ -56,6 +56,7 @@ export const formSchema = z.object({
   title: z.string(),
   duration: z.string(),
   location: z.string(),
+  timezone: z.string(),
   link: z.string(),
   monday: daySchema,
   tuesday: daySchema,
@@ -73,6 +74,7 @@ const newEventRequest = async (data: {
   title: string;
   duration: string;
   location: string;
+  timezone: string;
   link: string;
   monday: DaySchema;
   tuesday: DaySchema;
@@ -107,6 +109,7 @@ export default function NewEvent({ email }: { email: string | null }) {
       title: "",
       duration: "",
       location: "",
+      timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
       link: "",
       monday: {
         enabled: true,
@@ -255,6 +258,23 @@ export default function NewEvent({ email }: { email: string | null }) {
 
                 <FormField
                   control={form.control}
+                  name="timezone"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Timezone</FormLabel>
+                      <FormControl>
+                        <TimezoneSelect
+                          onValueChange={field.onChange}
+                          value={field.value}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
                   name="link"
                   render={({ field }) => (
                     <FormItem>
@@ -341,7 +361,7 @@ export default function NewEvent({ email }: { email: string | null }) {
               className="self-center"
               classNames={{ row: "flex " }}
             ></Calendar>
-            <TimezoneSelect />
+            {/* <TimezoneSelect /> */}
           </div>
         </div>
       </div>
