@@ -1,0 +1,1 @@
+ALTER TABLE `event_availability` ADD `day_index` int NOT NULL;

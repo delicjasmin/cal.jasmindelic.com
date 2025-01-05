@@ -1,6 +1,7 @@
-import { relations } from "drizzle-orm";
+import { relations, sql } from "drizzle-orm";
 import {
   boolean,
+  check,
   int,
   mysqlEnum,
   mysqlTable,
@@ -114,22 +115,32 @@ export const eventsRelations = relations(events, ({ many, one }) => ({
   }),
 }));
 
-export const eventAvailability = mysqlTable("event_availability", {
-  id: varchar("id", { length: 256 }).primaryKey(),
-  eventId: varchar("event_id", { length: 256 }).notNull(),
-  enabled: boolean("enabled").notNull(),
-  startTimeMinuteOffset: int("start_time_minute_offset").notNull(),
-  endTimeMinuteOffset: int("end_time_minute_offset").notNull(),
-  day: mysqlEnum("day", [
-    "monday",
-    "tuesday",
-    "wednesday",
-    "thursday",
-    "friday",
-    "saturday",
-    "sunday",
-  ]).notNull(),
-});
+export const eventAvailability = mysqlTable(
+  "event_availability",
+  {
+    id: varchar("id", { length: 256 }).primaryKey(),
+    eventId: varchar("event_id", { length: 256 }).notNull(),
+    enabled: boolean("enabled").notNull(),
+    startTimeMinuteOffset: int("start_time_minute_offset").notNull(),
+    endTimeMinuteOffset: int("end_time_minute_offset").notNull(),
+    day: mysqlEnum("day", [
+      "monday",
+      "tuesday",
+      "wednesday",
+      "thursday",
+      "friday",
+      "saturday",
+      "sunday",
+    ]).notNull(),
+    dayIndex: int("day_index").notNull(),
+  },
+  (table) => ({
+    checkConstraint: check(
+      "day_index_check",
+      sql`${table.dayIndex} >= 0 and ${table.dayIndex} <= 6`,
+    ),
+  }),
+);
 
 export const eventAvailabilityRelations = relations(
   eventAvailability,

@@ -101,13 +101,13 @@ export async function POST(req: Request) {
   } = await req.json();
 
   const availability = [
+    sunday,
     monday,
     tuesday,
     wednesday,
     thursday,
     friday,
     saturday,
-    sunday,
   ];
 
   const id = uniqid();
@@ -122,7 +122,7 @@ export async function POST(req: Request) {
         location: location || "Unknown",
         link: link || cryptoRandomString({ length: 9, type: "url-safe" }),
         enabled: true,
-        timezone: timezone || "eet",
+        timezone: timezone || Intl.DateTimeFormat().resolvedOptions().timeZone,
       });
 
       await tx.insert(eventAvailability).values(
@@ -133,6 +133,7 @@ export async function POST(req: Request) {
           startTimeMinuteOffset: day.startTime,
           endTimeMinuteOffset: day.endTime,
           day: day.day,
+          dayIndex: availability.indexOf(day),
         })),
       );
     });

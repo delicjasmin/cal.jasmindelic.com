@@ -15,6 +15,13 @@
       "when": 1724762354344,
       "tag": "0001_normal_tattoo",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1735844387814,
+      "tag": "0002_lovely_nekra",
+      "breakpoints": true
     }
   ]
 }
