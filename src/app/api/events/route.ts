@@ -187,6 +187,7 @@ export async function PUT(req: Request) {
           title,
           duration,
           location,
+          timezone,
           link,
         })
         .where(eq(events.id, id));
