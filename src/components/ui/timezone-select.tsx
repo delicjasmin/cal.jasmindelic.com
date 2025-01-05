@@ -11,15 +11,19 @@ import { ChevronDown } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 
 type TimezoneSelectProps = {
-  value: string;
+  value: string | undefined;
   onValueChange: (value: string) => void;
 };
 
-export function TimezoneSelect({
-  value,
-  onValueChange: onValueChange,
-}: TimezoneSelectProps) {
-  const [detectedTimezone] = useState<string>(value);
+export function TimezoneSelect({ value, onValueChange }: TimezoneSelectProps) {
+  const [detectedTimezone, setDetectedTimezone] = useState<string | undefined>(
+    undefined,
+  );
+
+  useEffect(() => {
+    const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    setDetectedTimezone(timezone);
+  }, []);
 
   const timezoneGroups = useMemo(
     () => [
